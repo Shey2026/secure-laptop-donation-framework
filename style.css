@@ -1,0 +1,114 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+  color: #212529;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background: linear-gradient(135deg, #007bff, #6610f2);
+  color: white;
+  text-align: center;
+  padding: 60px 20px;
+}
+
+header h1 {
+  font-size: 2.4rem;
+  font-weight: bold;
+}
+
+header p {
+  font-size: 1.1rem;
+  margin-top: 10px;
+}
+
+.navbar-brand {
+  font-weight: bold;
+}
+
+.nav-link {
+  font-size: 1rem;
+  padding: 8px 14px;
+}
+
+.nav-link.active {
+  background-color: #0d6efd;
+  border-radius: 5px;
+}
+
+.container {
+  max-width: 1150px;
+  margin: auto;
+  padding: 35px 20px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  margin-top: 30px;
+}
+
+.card-section {
+  margin-top: 30px;
+  padding: 20px;
+  border: 1px solid #e2e2e2;
+  border-radius: 10px;
+  background-color: #fafafa;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.stat-card {
+  background: #f3f6fb;
+  border: 1px solid #dfe7f3;
+  border-radius: 10px;
+  padding: 16px;
+  text-align: center;
+}
+
+.stat-card h4 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.stat-card p {
+  margin: 10px 0 0;
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #0d6efd;
+}
+
+h2, h3, h4 {
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+p, ul, ol, label, td, th {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+footer {
+  background-color: #212529;
+  color: white;
+  text-align: center;
+  padding: 18px 10px;
+  font-size: 0.95rem;
+  margin-top: 40px;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.table td, .table th {
+  vertical-align: middle;
+}

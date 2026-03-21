@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CSR Manager Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body onload="checkRole('csr'); loadStats(); loadCSRApprovalTable();">
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">CSR Portal</a>
+      <div class="collapse navbar-collapse show">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="csr-dashboard.html">CSR Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="records.html">Records</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><button class="btn btn-sm btn-outline-light ms-2" onclick="logout()">Logout</button></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container my-5">
+    <h2>CSR Manager Dashboard</h2>
+
+    <div class="stats-grid">
+      <div class="stat-card"><h4>Total Records</h4><p id="statTotal">0</p></div>
+      <div class="stat-card"><h4>Pending IT</h4><p id="statPendingIT">0</p></div>
+      <div class="stat-card"><h4>Pending CSR</h4><p id="statPendingCSR">0</p></div>
+      <div class="stat-card"><h4>Approved</h4><p id="statApproved">0</p></div>
+      <div class="stat-card"><h4>Donated</h4><p id="statDonated">0</p></div>
+    </div>
+    <div class="stat-card">
+  <h4>Rejected</h4>
+  <p id="statRejected">0</p>
+</div>
+
+    <div class="card-section">
+      <h3>Upload Donation Inventory CSV</h3>
+      <input type="file" id="csvFile" accept=".csv" class="form-control mb-3">
+      <button class="btn btn-primary" onclick="uploadCSV()">Upload Inventory</button>
+      <div id="uploadMessage" class="mt-3"></div>
+    </div>
+
+    <div class="card-section">
+      <h3>Laptops Pending CSR Approval</h3>
+
+      <div class="mb-3">
+        <input type="text" id="searchCSRApproval" class="form-control"
+          placeholder="Search by Asset ID, Serial Number, or Model"
+          oninput="loadCSRApprovalTable()">
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead class="table-dark">
+            <tr>
+              <th>Asset ID</th>
+              <th>Serial Number</th>
+              <th>Model</th>
+              <th>Method</th>
+              <th>Risk</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="csrApprovalTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+   <div class="card-section">
+  <a href="records.html" class="btn btn-outline-dark">View All Records</a>
+  <button class="btn btn-outline-success ms-2" onclick="downloadAllRecordsCSV()">Download All Records CSV</button>
+  <button class="btn btn-outline-primary ms-2" onclick="downloadDonatedRecordsCSV()">Download Donated Records CSV</button>
+  <button class="btn btn-outline-secondary ms-2" onclick="printDonatedRecords()">Print Donated Records</button>
+</div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Secure Laptop Donation Management System | Designed by Sehani</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secure Laptop Donation Management System</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">CSR Portal</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header>
+    <h1>Secure Laptop Donation Management System</h1>
+    <p>A workflow system for IT sanitization verification, CSR approval, donation completion, and record export</p>
+  </header>
+
+  <div class="container my-5">
+    <h2>Overview</h2>
+
+<p>
+This project presents a <strong>Cybersecurity-Based Laptop Donation Framework</strong> implemented through a web-based system. 
+It is designed to mitigate data privacy risks when organizations donate used laptops.
+</p>
+
+<p>
+Many organizations rely on simple formatting or factory reset, which does not permanently remove sensitive data. 
+This system ensures secure sanitization, verification, risk classification, and approval before donation.
+</p>
+
+<div class="card-section">
+  <h3>Cybersecurity Framework</h3>
+
+  <ol>
+    <li><strong>Risk Identification</strong> – Identify potential data leakage risks from donated devices</li>
+
+    <li><strong>Secure Data Sanitization</strong> – Use approved tools such as DBAN or Blancco following NIST standards</li>
+
+    <li><strong>Verification</strong> – Validate sanitization using wipe logs and certificates</li>
+
+    <li><strong>Risk Classification</strong> – Classify devices as Low, Medium, or High risk based on evidence</li>
+
+    <li><strong>Approval Control</strong> – CSR manager reviews and approves or rejects laptops</li>
+
+    <li><strong>Audit & Traceability</strong> – Maintain records of approvals, rejections, and donation details</li>
+
+    <li><strong>Compliance</strong> – Align with cybersecurity standards such as NIST SP 800-88</li>
+  </ol>
+
+  <p>
+    This framework is enforced through the system to ensure secure, traceable, and compliant laptop donation processes.
+  </p>
+</div>
+
+<div class="card-section">
+  <h3>System Workflow</h3>
+
+  <p>
+    Inventory Upload → Secure Sanitization → Risk Assessment → CSR Approval → Donation Completion → Audit & Record Export
+  </p>
+</div>
+
+    <div class="row mt-4">
+      <div class="col-md-6 mb-3">
+        <a href="login.html" class="btn btn-primary w-100 py-3">Login to System</a>
+      </div>
+      <div class="col-md-6 mb-3">
+        <a href="about.html" class="btn btn-outline-secondary w-100 py-3">About Project</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Secure Laptop Donation Management System | Designed by Sehani</p>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

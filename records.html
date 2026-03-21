@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Records</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body onload="checkRoleForRecords(); loadAllRecords(); loadStats();">
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="index.html">CSR Portal</a>
+      <div class="collapse navbar-collapse show">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
+          <li class="nav-item"><a class="nav-link active" href="records.html">Records</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container my-5">
+    <h2>All Laptop Records</h2>
+
+    <div class="stats-grid">
+      <div class="stat-card"><h4>Total Records</h4><p id="statTotal">0</p></div>
+      <div class="stat-card"><h4>Pending IT</h4><p id="statPendingIT">0</p></div>
+      <div class="stat-card"><h4>Pending CSR</h4><p id="statPendingCSR">0</p></div>
+      <div class="stat-card"><h4>Approved</h4><p id="statApproved">0</p></div>
+      <div class="stat-card"><h4>Donated</h4><p id="statDonated">0</p></div>
+    </div>
+    <div class="stat-card">
+  <h4>Rejected</h4>
+  <p id="statRejected">0</p>
+</div>
+
+    <div class="mb-3 mt-4">
+      <input type="text" id="searchRecords" class="form-control"
+        placeholder="Search by Asset ID, Serial Number, Model, Status, or Donated To"
+        oninput="loadAllRecords()">
+    </div>
+
+    <div class="mb-3">
+  <button class="btn btn-outline-success" onclick="downloadAllRecordsCSV()">Download Full Records CSV</button>
+  <button class="btn btn-outline-primary ms-2" onclick="downloadDonatedRecordsCSV()">Download Donated Records CSV</button>
+  <button class="btn btn-outline-secondary ms-2" onclick="printDonatedRecords()">Print Donated Records</button>
+  <button class="btn btn-danger ms-2" onclick="clearAllData()">Clear All System Data</button>
+</div>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+  <tr>
+    <th>Asset ID</th>
+    <th>Serial Number</th>
+    <th>Model</th>
+    <th>Current Status</th>
+    <th>Sanitization Method</th>
+    <th>Wipe Log</th>
+    <th>Certificate</th>
+    <th>Risk Level</th>
+    <th>Approved By</th>
+    <th>Approval Date</th>
+    <th>Rejection Reason</th>
+    <th>Rework Note</th>
+    <th>Donation Category</th>
+    <th>Exact Place Name</th>
+    <th>Contact Person</th>
+    <th>Donation Batch</th>
+    <th>Completed By</th>
+    <th>Completion Date</th>
+    <th>Remarks</th>
+    <th>IT Notes</th>
+  </tr>
+</thead>
+        <tbody id="recordsTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Secure Laptop Donation Management System | Designed by Sehani</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
