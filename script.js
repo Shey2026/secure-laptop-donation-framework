@@ -114,6 +114,9 @@ function uploadCSV() {
               sanitizationMethod: "",
               wipeLog: "",
               certificate: "",
+              sanitizationProof: "",
+              sanitizationProofData: "",
+              sanitizationProofType: "",
               riskLevel: "",
               itNotes: "",
               approvedBy: "",
@@ -238,53 +241,110 @@ function setupITForm() {
     const sanitizationMethod = document.getElementById("sanitizationMethod").value;
     const wipeLog = document.getElementById("wipeLog").value;
     const certificate = document.getElementById("certificate").value;
+    const proofFileInput = document.getElementById("sanitizationProof");
     const itNotes = document.getElementById("itNotes").value.trim();
 
     let laptops = getLaptops();
     const laptop = laptops.find(l => l.assetId === assetId);
     if (!laptop) return;
 
-    let riskLevel = "Medium";
-
-    if (
-      (sanitizationMethod === "DBAN" || sanitizationMethod === "Blancco") &&
-      wipeLog === "Yes" &&
-      certificate === "Yes"
-    ) {
-      riskLevel = "Low";
-    } else if (
-      (sanitizationMethod === "Factory Reset" ||
-        sanitizationMethod === "Formatting Only" ||
-        sanitizationMethod === "Manual Delete") &&
-      (wipeLog === "No" || certificate === "No")
-    ) {
-      riskLevel = "High";
+    if (!proofFileInput.files.length) {
+      showMessage("itProcessMessage", "warning", "Please upload sanitization proof before submitting.");
+      return;
     }
 
-    laptop.sanitizationMethod = sanitizationMethod;
-    laptop.wipeLog = wipeLog;
-    laptop.certificate = certificate;
-    laptop.itNotes = itNotes;
-    laptop.riskLevel = riskLevel;
-    laptop.currentStatus = "Pending CSR Approval";
+    const proofFile = proofFileInput.files[0];
+    const proofName = proofFile.name;
+    const proofType = proofFile.type;
 
-    saveLaptops(laptops);
+    const reader = new FileReader();
 
-    showMessage(
-      "itProcessMessage",
-      "success",
-      `IT processing completed. Risk level: <strong>${riskLevel}</strong>. Status updated to Pending CSR Approval.`
-    );
+    reader.onload = function () {
+      let riskLevel = "Medium";
 
-    form.reset();
-    document.getElementById("processAssetId").value = "";
-    document.getElementById("processSerialNumber").value = "";
-    document.getElementById("processModel").value = "";
+      if (
+        (sanitizationMethod === "DBAN" || sanitizationMethod === "Blancco") &&
+        wipeLog === "Yes" &&
+        certificate === "Yes"
+      ) {
+        riskLevel = "Low";
+      } else if (
+        (sanitizationMethod === "Factory Reset" ||
+          sanitizationMethod === "Formatting Only" ||
+          sanitizationMethod === "Manual Delete") &&
+        (wipeLog === "No" || certificate === "No")
+      ) {
+        riskLevel = "High";
+      }
 
-    loadITTable();
-    loadCSRApprovalTable();
-    loadStats();
+      laptop.sanitizationMethod = sanitizationMethod;
+      laptop.wipeLog = wipeLog;
+      laptop.certificate = certificate;
+      laptop.sanitizationProof = proofName;
+      laptop.sanitizationProofData = reader.result;
+      laptop.sanitizationProofType = proofType;
+      laptop.itNotes = itNotes;
+      laptop.riskLevel = riskLevel;
+      laptop.currentStatus = "Pending CSR Approval";
+
+      saveLaptops(laptops);
+
+      showMessage(
+        "itProcessMessage",
+        "success",
+        `IT processing completed. Risk level: <strong>${riskLevel}</strong>. Proof uploaded successfully. Status updated to Pending CSR Approval.`
+      );
+
+      form.reset();
+      document.getElementById("processAssetId").value = "";
+      document.getElementById("processSerialNumber").value = "";
+      document.getElementById("processModel").value = "";
+
+      loadITTable();
+      loadCSRApprovalTable();
+      loadStats();
+    };
+
+    reader.readAsDataURL(proofFile);
   });
+}
+
+function openProof(assetId) {
+  const laptops = getLaptops();
+  const laptop = laptops.find(l => l.assetId === assetId);
+
+  if (!laptop || !laptop.sanitizationProofData) {
+    alert("No proof available.");
+    return;
+  }
+
+  const win = window.open("", "_blank");
+  if (!win) {
+    alert("Popup blocked. Please allow popups.");
+    return;
+  }
+
+  if (laptop.sanitizationProofType === "application/pdf") {
+    win.document.write(`
+      <html>
+      <head><title>Sanitization Proof</title></head>
+      <body style="margin:0;">
+        <embed src="${laptop.sanitizationProofData}" type="application/pdf" width="100%" height="100%">
+      </body>
+      </html>
+    `);
+  } else {
+    win.document.write(`
+      <html>
+      <head><title>Sanitization Proof</title></head>
+      <body style="margin:0; display:flex; justify-content:center; align-items:center; background:#f5f5f5;">
+        <img src="${laptop.sanitizationProofData}" alt="Sanitization Proof" style="max-width:100%; max-height:100vh;">
+      </body>
+      </html>
+    `);
+  }
+
+  win.document.close();
 }
 
 function loadCSRApprovalTable() {
@@ -313,9 +373,9 @@ function loadCSRApprovalTable() {
   }
 
   filteredLaptops.forEach((laptop) => {
-    const approvalInfo = laptop.approvedBy
-      ? `${laptop.approvedBy}<br>${laptop.approvalDate || ""}`
-      : "-";
+    const proofButton = laptop.sanitizationProofData
+      ? `<button class="btn btn-sm btn-outline-secondary" onclick="openProof('${laptop.assetId}')">View Proof</button>`
+      : `<span class="badge bg-danger">No Proof</span>`;
 
     tableBody.innerHTML += `
       <tr>
@@ -324,8 +384,8 @@ function loadCSRApprovalTable() {
         <td>${laptop.model}</td>
         <td>${laptop.sanitizationMethod}</td>
         <td>${laptop.riskLevel}</td>
+        <td>${proofButton}</td>
         <td>${getStatusBadge(laptop.currentStatus)}</td>
-        <td>${approvalInfo}</td>
         <td>
           <button class="btn btn-sm btn-success me-1" onclick="approveLaptop('${laptop.assetId}')">Approve</button>
           <button class="btn btn-sm btn-danger" onclick="rejectLaptop('${laptop.assetId}')">Reject</button>
@@ -497,11 +557,15 @@ function loadAllRecords() {
   });
 
   if (filteredLaptops.length === 0) {
-    tableBody.innerHTML = `<tr><td colspan="20" class="text-center">No matching records found.</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="21" class="text-center">No matching records found.</td></tr>`;
     return;
   }
 
   filteredLaptops.forEach((laptop) => {
+    const proofView = laptop.sanitizationProofData
+      ? `<button class="btn btn-sm btn-outline-secondary" onclick="openProof('${laptop.assetId}')">View Proof</button>`
+      : `Not Uploaded`;
+
     tableBody.innerHTML += `
       <tr>
         <td>${laptop.assetId || ""}</td>
@@ -511,6 +575,7 @@ function loadAllRecords() {
         <td>${laptop.sanitizationMethod || ""}</td>
         <td>${laptop.wipeLog || ""}</td>
         <td>${laptop.certificate || ""}</td>
+        <td>${proofView}</td>
         <td>${laptop.riskLevel || ""}</td>
         <td>${laptop.approvedBy || ""}</td>
         <td>${laptop.approvalDate || ""}</td>
@@ -552,7 +617,8 @@ function downloadCSV(data, filename) {
 
   data.forEach((row) => {
     const values = headers.map((header) => {
-      const escaped = String(row[header] ?? "").replace(/"/g, '""');
+      const value = typeof row[header] === "string" ? row[header] : "";
+      const escaped = String(value ?? "").replace(/"/g, '""');
       return `"${escaped}"`;
     });
     csvRows.push(values.join(","));
@@ -572,12 +638,46 @@ function downloadCSV(data, filename) {
 }
 
 function downloadAllRecordsCSV() {
-  const laptops = getLaptops();
+  const laptops = getLaptops().map(l => ({
+    assetId: l.assetId,
+    serialNumber: l.serialNumber,
+    model: l.model,
+    currentStatus: l.currentStatus,
+    sanitizationMethod: l.sanitizationMethod,
+    wipeLog: l.wipeLog,
+    certificate: l.certificate,
+    sanitizationProof: l.sanitizationProof,
+    riskLevel: l.riskLevel,
+    approvedBy: l.approvedBy,
+    approvalDate: l.approvalDate,
+    rejectionReason: l.rejectionReason,
+    reworkNote: l.reworkNote,
+    donationCategory: l.donationCategory,
+    exactPlaceName: l.exactPlaceName,
+    contactPerson: l.contactPerson,
+    donationBatch: l.donationBatch,
+    completedBy: l.completedBy,
+    completionDate: l.completionDate,
+    remarks: l.remarks,
+    itNotes: l.itNotes
+  }));
   downloadCSV(laptops, "all_laptop_records.csv");
 }
 
 function downloadDonatedRecordsCSV() {
-  const laptops = getLaptops().filter(l => l.currentStatus === "Donated");
+  const laptops = getLaptops()
+    .filter(l => l.currentStatus === "Donated")
+    .map(l => ({
+      assetId: l.assetId,
+      serialNumber: l.serialNumber,
+      model: l.model,
+      donationCategory: l.donationCategory,
+      exactPlaceName: l.exactPlaceName,
+      contactPerson: l.contactPerson,
+      donationBatch: l.donationBatch,
+      completionDate: l.completionDate,
+      remarks: l.remarks
+    }));
   downloadCSV(laptops, "donated_laptop_records.csv");
 }
 
